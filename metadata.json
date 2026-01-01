@@ -1,0 +1,5 @@
+{
+  "name": "Typing Fall - Oxford 3000",
+  "description": "A high-performance vocabulary learning game using HTML5 Canvas and React, designed to help users master the Oxford 3000 most common English words through a falling-word typing challenge.",
+  "requestFramePermissions": []
+}
