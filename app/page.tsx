@@ -232,6 +232,15 @@ const Page: React.FC = () => {
   }
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // If Result is showing, Enter -> Next Level
+    if (gameState.status === GameStatus.WIN || gameState.status === GameStatus.LOSS) {
+      if (e.key === "Enter") {
+        e.preventDefault() // Prevent default newline
+        handleNextLevel()
+      }
+      return
+    }
+
     if (gameState.status !== GameStatus.FALLING) return
 
     if (e.key === "Enter") {
@@ -249,6 +258,21 @@ const Page: React.FC = () => {
   const isGameActive = gameState.status === GameStatus.FALLING
   const isResultShowing = gameState.status === GameStatus.WIN || gameState.status === GameStatus.LOSS
 
+  // Auto-focus management to keep keyboard up
+  useEffect(() => {
+    if (gameState.status !== GameStatus.IDLE) {
+      const focusInput = () => {
+        // Force focus if lost, but check strict equality to avoid loop
+        if (document.activeElement !== inputRef.current) {
+          inputRef.current?.focus()
+        }
+      }
+
+      const timeout = setTimeout(focusInput, 100)
+      return () => clearTimeout(timeout)
+    }
+  }, [gameState.status, displayedWord])
+
   return (
     <div className="flex flex-col h-[100dvh] overflow-hidden bg-gray-100 font-sans relative">
       <div className="absolute top-4 right-4 z-10 flex gap-4">
@@ -260,7 +284,7 @@ const Page: React.FC = () => {
         </div>
       </div>
 
-      <main className="flex-grow flex items-center justify-center relative w-full">
+      <main className="flex-grow flex items-center justify-center relative w-full overflow-y-auto">
         {gameState.status === GameStatus.IDLE && (
           <div className="text-center space-y-6 animate-in zoom-in duration-500 p-8">
             <h1 className="text-6xl font-black text-amber-500 tracking-tighter drop-shadow-sm">
@@ -295,24 +319,25 @@ const Page: React.FC = () => {
         )}
       </main>
 
-      <footer className="p-6 bg-white border-t border-gray-100 z-20">
+      <footer className="p-6 bg-white border-t border-gray-100 z-20 shrink-0">
         {gameState.status !== GameStatus.IDLE && (
-          <div className="max-w-2xl mx-auto relative">
+          <div className="max-w-m mx-auto relative">
             <input
               ref={inputRef}
               value={inputDisplay}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              disabled={!isInputVisible}
+              // Always keep enabled to keep keyboard open
+              disabled={false}
               className={`w-full text-center text-4xl font-mono py-4 rounded-xl border-2 transition-all outline-none
               ${showError
                   ? "border-red-400 bg-red-50 text-red-600 animate-shake"
                   : "border-gray-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-50"
                 }
               ${isErrorShake ? "translate-x-[-2px]" : ""} 
-              ${!isInputVisible ? "opacity-50 cursor-not-allowed bg-gray-50" : ""}
+              ${!isInputVisible ? "opacity-50 bg-gray-50 text-gray-400" : ""}
             `}
-              placeholder={isGameActive ? "Gõ từ tiếng Anh..." : ""}
+              placeholder={isGameActive ? "Gõ từ tiếng Anh..." : "Nhấn Enter để tiếp tục"}
               autoComplete="off"
               spellCheck={false}
               autoFocus
