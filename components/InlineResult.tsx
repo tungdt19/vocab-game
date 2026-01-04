@@ -40,7 +40,7 @@ const InlineResult: React.FC<InlineResultProps> = ({ status, word, onNext }) => 
     const isWin = status === GameStatus.WIN
 
     return (
-        <div className={`w-full max-w-2xl mx-auto p-6 animate-in fade-in slide-in-from-bottom-4 duration-500`}>
+        <div className={`w-full max-w-2xl mx-auto p-4 animate-in fade-in slide-in-from-bottom-4 duration-500`}>
             <div className={`
         relative overflow-hidden rounded-2xl border-2 shadow-xl bg-white
         ${isWin ? "border-green-100 shadow-green-100" : "border-red-100 shadow-red-100"}
@@ -51,9 +51,9 @@ const InlineResult: React.FC<InlineResultProps> = ({ status, word, onNext }) => 
           ${isWin ? "bg-green-500" : "bg-red-500"}
         `} />
 
-                <div className="p-6 md:p-8">
+                <div className="p-4 md:p-8">
                     {/* Status Badge */}
-                    <div className="flex justify-center mb-6">
+                    <div className="flex justify-center mb-4">
                         <div className={`
               flex items-center gap-2 px-4 py-1.5 rounded-full font-bold text-sm uppercase tracking-wider
               ${isWin ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}
@@ -64,12 +64,12 @@ const InlineResult: React.FC<InlineResultProps> = ({ status, word, onNext }) => 
                     </div>
 
                     {/* Word Details */}
-                    <div className="text-center space-y-4 mb-8">
+                    <div className="text-center space-y-3 mb-4">
                         <div>
-                            <h2 className="text-4xl md:text-5xl font-black text-gray-900 mb-2">
+                            <h2 className="text-3xl md:text-5xl font-black text-gray-900 mb-1">
                                 {word.english}
                             </h2>
-                            <div className="flex items-center justify-center gap-2 text-xl text-blue-600 font-medium">
+                            <div className="flex items-center justify-center gap-2 text-lg md:text-xl text-blue-600 font-medium">
                                 <span>{word.vietnamese}</span>
                                 <span className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs rounded-full uppercase tracking-wide">
                                     {word.type}
@@ -78,14 +78,14 @@ const InlineResult: React.FC<InlineResultProps> = ({ status, word, onNext }) => 
                         </div>
 
                         {/* Examples */}
-                        <div className="bg-gray-50 rounded-xl p-5 text-left border border-gray-100/50">
-                            <div className="flex gap-3 mb-2">
+                        <div className="bg-gray-50 rounded-xl p-4 text-left border border-gray-100/50">
+                            <div className="flex gap-3 mb-1">
                                 <div className="w-1 h-full bg-amber-400 rounded-full shrink-0 min-h-[1rem]" />
-                                <p className="text-gray-800 font-medium italic text-lg leading-relaxed">
+                                <p className="text-gray-800 font-medium italic text-base leading-relaxed">
                                     "{word.example_en}"
                                 </p>
                             </div>
-                            <p className="text-gray-500 pl-4">
+                            <p className="text-gray-500 pl-4 text-sm">
                                 {word.example_vn}
                             </p>
                         </div>
@@ -95,7 +95,7 @@ const InlineResult: React.FC<InlineResultProps> = ({ status, word, onNext }) => 
                     <button
                         onClick={onNext}
                         className={`
-              group w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all active:scale-[0.98]
+              group w-full py-3 md:py-4 rounded-xl font-bold text-white shadow-lg transition-all active:scale-[0.98]
               flex items-center justify-center gap-2
               ${isWin
                                 ? "bg-green-500 hover:bg-green-600 shadow-green-200"
