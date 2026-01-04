@@ -7,6 +7,7 @@ const inter = Inter({ subsets: ["latin", "vietnamese"] })
 export const metadata: Metadata = {
   title: "Typing Fall - Game Học Từ Vựng",
   description: "Trò chơi học từ vựng Oxford 3000",
+  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0",
 }
 
 export default function RootLayout({

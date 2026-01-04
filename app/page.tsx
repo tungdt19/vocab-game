@@ -262,7 +262,7 @@ const Page: React.FC = () => {
   const isResultShowing = gameState.status === GameStatus.WIN || gameState.status === GameStatus.LOSS
 
   return (
-    <div className="flex flex-col h-screen overflow-hidden bg-gray-100 font-sans relative">
+    <div className="flex flex-col h-[100dvh] overflow-hidden bg-gray-100 font-sans relative">
       <div className="absolute top-4 right-4 z-10 flex gap-4">
         <div className="bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-sm font-bold text-gray-700 border border-white/50">
           🏆 Top: {highScore}
