@@ -1,7 +1,22 @@
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+import type { Metadata } from "next"
+import { Inter } from "next/font/google"
+import "./globals.css"
+
+const inter = Inter({ subsets: ["latin", "vietnamese"] })
+
+export const metadata: Metadata = {
+  title: "Typing Fall - Game Học Từ Vựng",
+  description: "Trò chơi học từ vựng Oxford 3000",
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
     <html lang="vi">
-      <body>{children}</body>
+      <body className={inter.className}>{children}</body>
     </html>
   )
 }
