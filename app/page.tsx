@@ -8,7 +8,7 @@ import GameCanvas from "../components/GameCanvas"
 import InlineResult from "../components/InlineResult"
 import confetti from "canvas-confetti"
 
-const GAME_DURATION_MS = 8000
+const GAME_DURATION_MS = 10000
 const UPDATE_INTERVAL_MS = 10
 const STEP_INCREMENT = 100 / (GAME_DURATION_MS / UPDATE_INTERVAL_MS)
 
@@ -308,32 +308,34 @@ const Page: React.FC = () => {
       </main>
 
       <footer className="p-6 bg-white border-t border-gray-100 z-20">
-        <div className="max-w-2xl mx-auto relative">
-          <input
-            ref={inputRef}
-            value={inputDisplay}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            disabled={!isInputVisible}
-            className={`w-full text-center text-4xl font-mono py-4 rounded-xl border-2 transition-all outline-none
+        {gameState.status !== GameStatus.IDLE && (
+          <div className="max-w-2xl mx-auto relative">
+            <input
+              ref={inputRef}
+              value={inputDisplay}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              disabled={!isInputVisible}
+              className={`w-full text-center text-4xl font-mono py-4 rounded-xl border-2 transition-all outline-none
               ${showError
-                ? "border-red-400 bg-red-50 text-red-600 animate-shake"
-                : "border-gray-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-50"
-              }
+                  ? "border-red-400 bg-red-50 text-red-600 animate-shake"
+                  : "border-gray-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-50"
+                }
               ${isErrorShake ? "translate-x-[-2px]" : ""} 
               ${!isInputVisible ? "opacity-50 cursor-not-allowed bg-gray-50" : ""}
             `}
-            placeholder={isGameActive ? "Gõ từ tiếng Anh..." : ""}
-            autoComplete="off"
-            spellCheck={false}
-            autoFocus
-          />
-          {isGameActive && (
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm font-bold pointer-events-none hidden sm:block">
-              PRESS ENTER
-            </div>
-          )}
-        </div>
+              placeholder={isGameActive ? "Gõ từ tiếng Anh..." : ""}
+              autoComplete="off"
+              spellCheck={false}
+              autoFocus
+            />
+            {isGameActive && (
+              <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-300 text-sm font-bold pointer-events-none hidden sm:block">
+                PRESS ENTER
+              </div>
+            )}
+          </div>
+        )}
       </footer>
 
       <style jsx global>{`
