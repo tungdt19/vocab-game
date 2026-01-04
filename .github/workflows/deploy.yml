@@ -37,11 +37,16 @@ jobs:
             echo "Unable to determine package manager"
             exit 1
           fi
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+        if: hashFiles('**/pnpm-lock.yaml') != ''
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: "20"
-          cache: ${{ steps.detect-package-manager.outputs.manager }}
+          cache: ${{ hashFiles('**/pnpm-lock.yaml') != '' && 'pnpm' || steps.detect-package-manager.outputs.manager }}
       - name: Setup Pages
         uses: actions/configure-pages@v5
         with:
@@ -51,13 +56,23 @@ jobs:
         with:
           path: |
             .next/cache
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
           restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock') }}-
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json', '**/yarn.lock', '**/pnpm-lock.yaml') }}-
       - name: Install dependencies
-        run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            pnpm install
+          else
+            ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
+          fi
       - name: Build with Next.js
-        run: ${{ steps.detect-package-manager.outputs.runner }} next build
+        run: |
+          if [ -f "pnpm-lock.yaml" ]; then
+            pnpm next build
+          else
+            ${{ steps.detect-package-manager.outputs.runner }} next build
+          fi
       - name: Create .nojekyll
         run: touch ./out/.nojekyll
       - name: Upload artifact
