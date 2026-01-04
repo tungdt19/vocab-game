@@ -4,13 +4,11 @@ import type React from "react"
 import { useState, useEffect, useRef, useCallback } from "react"
 import { OXFORD_3000 } from "../constants"
 import { GameStatus, type GameState, type VocabularyItem } from "../types"
-import GameCanvas from "../components/GameCanvas"
+import WordDisplay from "../components/WordDisplay"
 import InlineResult from "../components/InlineResult"
 import confetti from "canvas-confetti"
 
-const GAME_DURATION_MS = 10000
-const UPDATE_INTERVAL_MS = 10
-const STEP_INCREMENT = 100 / (GAME_DURATION_MS / UPDATE_INTERVAL_MS)
+const GAME_DURATION_SEC = 10
 
 const Page: React.FC = () => {
   const [gameState, setGameState] = useState<GameState>({
@@ -20,7 +18,9 @@ const Page: React.FC = () => {
     inputValue: "",
   })
 
-  const [posPercent, setPosPercent] = useState(0)
+  // Timer State
+  const [timeLeft, setTimeLeft] = useState(GAME_DURATION_SEC)
+
   const [isErrorShake, setIsErrorShake] = useState(false)
   const [showError, setShowError] = useState(false)
   const [inputDisplay, setInputDisplay] = useState("")
@@ -63,8 +63,6 @@ const Page: React.FC = () => {
       usedIndicesRef.current.clear()
     }
 
-    // Optimization: If density of used is low, just pick random until unique
-    // If density is high, build available list
     if (usedIndicesRef.current.size < totalWords / 2) {
       let candidate = Math.floor(Math.random() * totalWords)
       while (usedIndicesRef.current.has(candidate)) {
@@ -73,7 +71,6 @@ const Page: React.FC = () => {
       usedIndicesRef.current.add(candidate)
       return OXFORD_3000[candidate]
     } else {
-      // Build available list for the second half to guarantee termination
       for (let i = 0; i < totalWords; i++) {
         if (!usedIndicesRef.current.has(i)) {
           availableIndices.push(i)
@@ -81,7 +78,6 @@ const Page: React.FC = () => {
       }
 
       if (availableIndices.length === 0) {
-        // Should not happen due to reset check above, but purely safe fallback
         usedIndicesRef.current.clear()
         return OXFORD_3000[Math.floor(Math.random() * totalWords)]
       }
@@ -103,13 +99,13 @@ const Page: React.FC = () => {
       setDisplayedWord(null)
       setIsInputVisible(false)
       setInputDisplay("")
+      setTimeLeft(GAME_DURATION_SEC) // Reset Timer
 
       const word = getNextRandomWord()
-      if (!word) return // Should not happen
+      if (!word) return
 
       const firstChar = word.english[0].toLowerCase()
 
-      // Reset score if requested
       if (resetScore) {
         setGameState((prev) => ({ ...prev, score: 0 }))
       }
@@ -118,17 +114,18 @@ const Page: React.FC = () => {
         setGameState((prev) => ({
           ...prev,
           currentWord: word,
-          status: GameStatus.FALLING,
-          inputValue: firstChar, // Hint first char
+          status: GameStatus.FALLING, // We keep the enum name 'FALLING' as "Active Game State" for simplicity
+          inputValue: firstChar,
           score: resetScore ? 0 : prev.score,
         }))
-        setPosPercent(0)
+
+        // Reset timer again explicitly to be safe
+        setTimeLeft(GAME_DURATION_SEC)
 
         setTimeout(() => {
           setInputDisplay(firstChar)
           setIsInputVisible(true)
           isPickingWord.current = false
-          // Auto focus
           setTimeout(() => inputRef.current?.focus(), 50)
         }, 100)
       }, 150)
@@ -137,10 +134,6 @@ const Page: React.FC = () => {
   )
 
   const startGame = () => {
-    // Reset used indices on new game?
-    // Maybe not, we want to encounter new words across games.
-    // user said "auto random new words", implying ignoring previously seen?
-    // Let's keep the set persistent across retries, but if they refresh page it clears.
     pickNewWord(true)
   }
 
@@ -152,27 +145,25 @@ const Page: React.FC = () => {
     }
   }
 
-  // Game Loop
+  // Timer Loop
   useEffect(() => {
     if (gameState.status === GameStatus.FALLING) {
       const interval = setInterval(() => {
-        setPosPercent((prev) => {
-          if (prev >= 100) {
+        setTimeLeft((prev) => {
+          if (prev <= 0) {
             clearInterval(interval)
             handleTimeOut()
-            return 100
+            return 0
           }
-          return prev + STEP_INCREMENT
+          return prev - 1
         })
-      }, UPDATE_INTERVAL_MS)
+      }, 1000)
       return () => clearInterval(interval)
     }
   }, [gameState.status])
 
   const handleTimeOut = () => {
     if (!gameState.currentWord) return
-
-    // Time out = Wrong
     setGameState((prev) => ({
       ...prev,
       status: GameStatus.LOSS,
@@ -198,7 +189,7 @@ const Page: React.FC = () => {
           angle: 60,
           spread: 55,
           origin: { x: 0 },
-          colors: ['#f59e0b', '#10b981', '#3b82f6'] // Amber, Emerald, Blue
+          colors: ['#f59e0b', '#10b981', '#3b82f6']
         })
         confetti({
           particleCount: 5,
@@ -226,15 +217,13 @@ const Page: React.FC = () => {
       }
     })
     setDisplayedWord(gameState.currentWord)
-    setIsInputVisible(false) // Hide input on win
+    setIsInputVisible(false)
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (gameState.status !== GameStatus.FALLING || !isInputVisible) return
 
     let value = e.target.value.toLowerCase()
-
-    // Hint logic: ensure first char is always present/correct if start
     const target = gameState.currentWord?.english.toLowerCase() || ""
     if (value.length < 1) value = target[0]
 
@@ -253,7 +242,6 @@ const Page: React.FC = () => {
         handleWin()
       } else {
         triggerError()
-        // Do NOT change status, just shake and let user try again
       }
     }
   }
@@ -279,7 +267,7 @@ const Page: React.FC = () => {
               FALLING WORDS
             </h1>
             <p className="text-gray-500 font-medium text-lg max-w-md mx-auto">
-              Gõ từ tiếng Anh tương ứng với nghĩa tiếng Việt đang rơi xuống.
+              Gõ từ tiếng Anh tương ứng với nghĩa tiếng Việt đang hiển thị.
             </p>
             <button
               onClick={startGame}
@@ -291,10 +279,10 @@ const Page: React.FC = () => {
         )}
 
         {isGameActive && (
-          <GameCanvas
+          <WordDisplay
             word={gameState.currentWord}
-            posPercent={posPercent}
-            status={gameState.status}
+            timeLeft={timeLeft}
+            totalTime={GAME_DURATION_SEC}
           />
         )}
 
