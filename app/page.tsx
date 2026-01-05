@@ -274,7 +274,7 @@ const Page: React.FC = () => {
   }, [gameState.status, displayedWord])
 
   return (
-    <div className="flex flex-col h-[100dvh] overflow-hidden bg-gray-100 font-sans relative">
+    <div className="flex flex-col h-[100dvh] overflow-hidden bg-[url(/background.png)] bg-cover bg-center font-sans relative">
       <div className="absolute top-4 right-4 z-10 flex gap-4">
         <div className="bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-sm font-bold text-gray-700 border border-white/50">
           🏆 Top: {highScore}
@@ -288,7 +288,7 @@ const Page: React.FC = () => {
         {gameState.status === GameStatus.IDLE && (
           <div className="text-center space-y-6 animate-in zoom-in duration-500 p-8">
             <h1 className="text-6xl font-black text-amber-500 tracking-tighter drop-shadow-sm">
-              FALLING WORDS
+              Học từ vựng Tiếng Anh
             </h1>
             <p className="text-gray-500 font-medium text-lg max-w-md mx-auto">
               Gõ từ tiếng Anh tương ứng với nghĩa tiếng Việt đang hiển thị.
