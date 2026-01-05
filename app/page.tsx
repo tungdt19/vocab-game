@@ -286,7 +286,7 @@ const Page: React.FC = () => {
         </div>
       )}
 
-      <main className="flex-grow flex flex-col items-center justify-center pt-2 md:pt-8 pb-4 relative w-full overflow-y-auto min-h-0">
+      <main className="flex-grow flex flex-col items-center justify-end pt-2 md:pt-8 pb-4 relative w-full overflow-y-auto min-h-0">
         {gameState.status === GameStatus.IDLE && (
           <div className="text-center space-y-6 animate-in zoom-in duration-500 p-8">
             <h1 className="text-6xl font-black text-amber-500 tracking-tighter drop-shadow-sm">
