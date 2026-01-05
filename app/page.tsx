@@ -284,7 +284,7 @@ const Page: React.FC = () => {
         </div>
       </div>
 
-      <main className="flex-grow flex flex-col items-center justify-start pt-8 pb-32 relative w-full overflow-y-auto">
+      <main className="flex-grow flex flex-col items-center justify-start pt-8 pb-4 relative w-full overflow-y-auto min-h-0">
         {gameState.status === GameStatus.IDLE && (
           <div className="text-center space-y-6 animate-in zoom-in duration-500 p-8">
             <h1 className="text-6xl font-black text-amber-500 tracking-tighter drop-shadow-sm">
@@ -329,7 +329,7 @@ const Page: React.FC = () => {
               onKeyDown={handleKeyDown}
               // Always keep enabled to keep keyboard open
               disabled={false}
-              className={`w-full text-center text-4xl font-mono py-4 rounded-xl border-2 transition-all outline-none
+              className={`w-full text-center text-2xl md:text-4xl font-mono py-2 md:py-4 rounded-xl border-2 transition-all outline-none
               ${showError
                   ? "border-red-400 bg-red-50 text-red-600 animate-shake"
                   : "border-gray-200 focus:border-amber-400 focus:ring-4 focus:ring-amber-50"
