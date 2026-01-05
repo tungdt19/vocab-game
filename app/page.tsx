@@ -275,16 +275,18 @@ const Page: React.FC = () => {
 
   return (
     <div className="flex flex-col h-[100dvh] overflow-hidden bg-[url('/vocab-game/background.png')] bg-cover bg-center font-sans relative">
-      <div className="absolute top-4 right-4 z-10 flex gap-4">
-        <div className="bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-sm font-bold text-gray-700 border border-white/50">
-          🏆 Top: {highScore}
+      {gameState.status !== GameStatus.IDLE && (
+        <div className="absolute top-4 right-4 z-10 flex gap-4">
+          <div className="bg-white/80 backdrop-blur px-4 py-2 rounded-lg shadow-sm font-bold text-gray-700 border border-white/50">
+            🏆 Top: {highScore}
+          </div>
+          <div className="bg-amber-100 px-4 py-2 rounded-lg shadow-sm font-bold text-amber-800 border border-amber-200">
+            ⭐ Score: {gameState.score}
+          </div>
         </div>
-        <div className="bg-amber-100 px-4 py-2 rounded-lg shadow-sm font-bold text-amber-800 border border-amber-200">
-          ⭐ Score: {gameState.score}
-        </div>
-      </div>
+      )}
 
-      <main className="flex-grow flex flex-col items-center justify-start pt-8 pb-4 relative w-full overflow-y-auto min-h-0">
+      <main className="flex-grow flex flex-col items-center justify-center pt-2 md:pt-8 pb-4 relative w-full overflow-y-auto min-h-0">
         {gameState.status === GameStatus.IDLE && (
           <div className="text-center space-y-6 animate-in zoom-in duration-500 p-8">
             <h1 className="text-6xl font-black text-amber-500 tracking-tighter drop-shadow-sm">

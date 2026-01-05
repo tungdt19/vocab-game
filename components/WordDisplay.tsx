@@ -18,7 +18,7 @@ const WordDisplay: React.FC<WordDisplayProps> = ({ word, timeLeft, totalTime }) 
     if (progressPercent < 30) progressColor = "bg-red-500"
 
     return (
-        <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto p-8 animate-in zoom-in duration-300">
+        <div className="flex flex-col items-center justify-center w-full max-w-md mx-auto p-4 md:p-8 animate-in zoom-in duration-300">
             {/* Word Card */}
             <div className="w-full bg-white rounded-3xl shadow-xl border-2 border-gray-100 p-8 text-center relative overflow-hidden">
 
