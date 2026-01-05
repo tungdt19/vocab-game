@@ -164,12 +164,21 @@ const Page: React.FC = () => {
 
   const handleTimeOut = () => {
     if (!gameState.currentWord) return
-    setGameState((prev) => ({
-      ...prev,
-      status: GameStatus.LOSS,
-    }))
-    setDisplayedWord(gameState.currentWord)
-    setIsInputVisible(false)
+
+    // Check if user has typed correctly but didn't press enter (using ref to avoid stale state)
+    const currentInput = inputRef.current?.value.toLowerCase() || ""
+    const target = gameState.currentWord.english.toLowerCase()
+
+    if (currentInput === target) {
+      handleWin()
+    } else {
+      setGameState((prev) => ({
+        ...prev,
+        status: GameStatus.LOSS,
+      }))
+      setDisplayedWord(gameState.currentWord)
+      setIsInputVisible(false)
+    }
   }
 
   const triggerError = () => {
